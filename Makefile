@@ -36,7 +36,7 @@ TOP = ../../../../../..
 INC =  -I../Inc
 INC += -I$(TOP)/Drivers/STM32F4xx_HAL_Driver/Inc
 INC += -I$(TOP)/Drivers/CMSIS/Device/ST/STM32F4xx/Include
-INC += -I$(TOP)/Drivers/BSP/STM32F4-Discovery
+INC += -I$(TOP)/Drivers/BSP/STM324xG_EVAL
 INC += -I$(TOP)/Drivers/CMSIS/Include
 
 CFLAGS_CORTEX_M4 = -mthumb -mtune=cortex-m4 -mabi=aapcs-linux -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fsingle-precision-constant -Wdouble-promotion
@@ -57,7 +57,9 @@ OBJ = \
 	build/main.o \
 	build/stm32f4xx_it.o \
 	build/system_stm32f4xx.o \
-	build/stm32f4_discovery.o \
+	build/stm324xg_eval_sram.o \
+	build/stm324xg_eval_io.o \
+	build/stm324xg_eval.o \
 	build/stm32f4xx_hal.o \
 	build/stm32f4xx_hal_cortex.o \
 	build/stm32f4xx_hal_dma.o \
@@ -65,6 +67,10 @@ OBJ = \
 	build/stm32f4xx_hal_i2c.o \
 	build/stm32f4xx_hal_rcc.o \
 	build/stm32f4xx_hal_spi.o \
+	build/stm32f4xx_hal_sram.o \
+	build/stm32f4xx_hal_uart.o \
+	build/stm32f4xx_ll_fsmc.o \
+	build/stmpe811.o \
 
 all: $(BUILD)/flash.elf
 
@@ -88,7 +94,7 @@ $(BUILD)/%.o: %.s
 	$(ECHO) "AS $<"
 	$(Q)$(AS) -o $@ $<
 
-vpath %.c ../Src $(TOP)/Drivers/BSP/STM32F4-Discovery $(TOP)/Drivers/STM32F4xx_HAL_Driver/Src
+vpath %.c ../Src $(TOP)/Drivers/BSP/STM324xG_EVAL $(TOP)/Drivers/STM32F4xx_HAL_Driver/Src $(TOP)/Drivers/BSP/Components/stmpe811
 $(BUILD)/%.o: %.c
 	$(call compile_c)
 
