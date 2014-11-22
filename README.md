@@ -16,14 +16,12 @@ cd gcc
 make
 ```
 
-Put board in DFU mode using dfu-util:
-
-`make pgm`
-
-Or, convert the ELF file to binary format,
-then flash the binary using https://github.com/texane/stlink:
-
+Put the board in DFU mode and flash using dfu-util:
 ```
-arm-none-eabi-objcopy -O binary flash.elf flash.bin
-st-flash write flash.bin 0x8000000
+make dfu
+```
+
+Or, flash using https://github.com/texane/stlink:
+```
+make stlink
 ```

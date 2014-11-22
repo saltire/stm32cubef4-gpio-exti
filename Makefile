@@ -98,8 +98,11 @@ vpath %.c ../Src $(TOP)/Drivers/BSP/STM324xG_EVAL $(TOP)/Drivers/STM32F4xx_HAL_D
 $(BUILD)/%.o: %.c
 	$(call compile_c)
 
-pgm: $(BUILD)/flash.bin
+dfu: $(BUILD)/flash.bin
 	dfu-util -a 0 -D $^ -s 0x8000000:leave
+	
+stlink: $(BUILD)/flash.bin
+	st-flash write $^ 0x8000000
 
 $(BUILD)/flash.bin: $(BUILD)/flash.elf
 	$(OBJCOPY) -O binary $^ $@
