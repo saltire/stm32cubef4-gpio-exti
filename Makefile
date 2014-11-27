@@ -33,30 +33,25 @@ OBJCOPY = $(CROSS_COMPILE)objcopy
 SIZE = $(CROSS_COMPILE)size
 
 TOP = ../../../../../..
-INC =  -I../Inc
-INC += -I$(TOP)/Drivers/STM32F4xx_HAL_Driver/Inc
-INC += -I$(TOP)/Drivers/CMSIS/Device/ST/STM32F4xx/Include
-INC += -I$(TOP)/Drivers/BSP/STM324xG_EVAL
-INC += -I$(TOP)/Drivers/CMSIS/Include
+INC = \
+	-I../Inc \
+	-I$(TOP)/Drivers/BSP/STM324xG_EVAL \
+	-I$(TOP)/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
+	-I$(TOP)/Drivers/CMSIS/Include \
+	-I$(TOP)/Drivers/STM32F4xx_HAL_Driver/Inc \
 
-CFLAGS_CORTEX_M4 = -mthumb -mtune=cortex-m4 -mabi=aapcs-linux -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fsingle-precision-constant -Wdouble-promotion
-CFLAGS = $(INC) -D STM32F407xx -Wall -ansi -std=gnu99 $(CFLAGS_CORTEX_M4) $(COPT)
-
-#Debugging/Optimization
-ifeq ($(DEBUG), 1)
-CFLAGS += -g -DPENDSV_DEBUG
-COPT = -O0
-else
-COPT += -Os -DNDEBUG
-endif
-
-LDFLAGS = --nostdlib -T STM32F407VG_FLASH.ld -Map=$(@:.elf=.map) --cref
+SRC = \
+	../Src \
+	$(TOP)/Drivers/BSP/Components/stmpe811 \
+	$(TOP)/Drivers/BSP/STM324xG_EVAL \
+	$(TOP)/Drivers/STM32F4xx_HAL_Driver/Src \
 
 OBJ = \
 	build/startup_stm32f407xx.o \
 	build/main.o \
 	build/stm32f4xx_it.o \
 	build/system_stm32f4xx.o \
+	build/stmpe811.o \
 	build/stm324xg_eval_sram.o \
 	build/stm324xg_eval_io.o \
 	build/stm324xg_eval.o \
@@ -70,7 +65,19 @@ OBJ = \
 	build/stm32f4xx_hal_sram.o \
 	build/stm32f4xx_hal_uart.o \
 	build/stm32f4xx_ll_fsmc.o \
-	build/stmpe811.o \
+
+CFLAGS_CORTEX_M4 = -mthumb -mtune=cortex-m4 -mabi=aapcs-linux -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fsingle-precision-constant -Wdouble-promotion
+CFLAGS = $(INC) -D STM32F407xx -Wall -ansi -std=gnu99 $(CFLAGS_CORTEX_M4) $(COPT)
+
+#Debugging/Optimization
+ifeq ($(DEBUG), 1)
+CFLAGS += -g -DPENDSV_DEBUG
+COPT = -O0
+else
+COPT += -Os -DNDEBUG
+endif
+
+LDFLAGS = --nostdlib -T STM32F407VG_FLASH.ld -Map=$(@:.elf=.map) --cref
 
 all: $(BUILD)/flash.elf
 
@@ -94,7 +101,7 @@ $(BUILD)/%.o: %.s
 	$(ECHO) "AS $<"
 	$(Q)$(AS) -o $@ $<
 
-vpath %.c ../Src $(TOP)/Drivers/BSP/STM324xG_EVAL $(TOP)/Drivers/STM32F4xx_HAL_Driver/Src $(TOP)/Drivers/BSP/Components/stmpe811
+vpath %.c $(SRC)
 $(BUILD)/%.o: %.c
 	$(call compile_c)
 
