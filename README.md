@@ -25,3 +25,10 @@ Or, flash using https://github.com/texane/stlink:
 ```
 make stlink
 ```
+
+This can be adapted to work with example projects in STM32Cube other than GPIO_EXTI.
+Included is a Python script that reads the provided config files
+and patches the makefile with some build dependencies;
+run `python deps.py` after cloning the repo.
+You will likely still need to make some manual edits before running `make`,
+but it's a good starting point.
